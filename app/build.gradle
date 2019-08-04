@@ -17,6 +17,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    compileOptions {
+        sourceCompatibility = '1.8'
+        targetCompatibility = '1.8'
+    }
 }
 
 dependencies {
@@ -28,6 +32,13 @@ dependencies {
     //fireBase
     implementation 'com.google.firebase:firebase-database:18.0.1'
     implementation 'com.google.firebase:firebase-core:17.0.1'
+
+    implementation 'com.firebaseui:firebase-ui-firestore:5.0.0' //FirebaseUI for Cloud Firestore
+    implementation 'com.firebaseui:firebase-ui-auth:5.0.0' //FirebaseUI for Firebase Auth
+
+    implementation 'com.squareup.picasso:picasso:2.71828' //Load photos
+    implementation 'de.hdodenhof:circleimageview:3.0.0'
+
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'

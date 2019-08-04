@@ -15,4 +15,21 @@
     <string name="menu_send">Send</string>
     <string name="title_hint">Deals Title</string>
     <string name="deal_price">Deal Price</string>
+
+
+    <string name="btn_cancel">Cancel</string>
+    <string name="btn_save">Save</string>
+    <string name="hint_title">Title</string>
+
+
+
+
+    <string name="edit">Edit</string>
+    <string name="update">Update</string>
+    <string name="delete">Delete</string>
+    <string name="last_updated_on">Last Updated on</string>
+    <string name="profile">Profile</string>
+    <string name="help">Help</string>
+    <string name="logout">Logout</string>
+    <string name="info">Info</string>
 </resources>

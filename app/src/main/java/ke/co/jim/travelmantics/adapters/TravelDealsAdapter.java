@@ -1,8 +1,10 @@
 package ke.co.jim.travelmantics.adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,13 +33,14 @@ import ke.co.jim.travelmantics.utils.FirebaseUtils;
 
 public class TravelDealsAdapter extends RecyclerView.Adapter<TravelDealsAdapter.TravelDealsViewHolder> {
 
+    private final static String TAG=TravelDealsAdapter.class.getSimpleName();
     private ArrayList<TravelDeal> travelDeals;
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mDatabaseReference;
     private ChildEventListener mChildEventListener;
 
-    public TravelDealsAdapter() {
-        FirebaseUtils.opnebFbRerefence("traveldeals");
+    public TravelDealsAdapter(Activity context) {
+        FirebaseUtils.opnebFbRerefence("traveldeals", context);
         mFirebaseDatabase = FirebaseUtils.mFirebaseDatabase;
         mDatabaseReference = FirebaseUtils.mDatabaseReference;
         travelDeals = FirebaseUtils.mTravelDeals;
@@ -144,7 +147,9 @@ public class TravelDealsAdapter extends RecyclerView.Adapter<TravelDealsAdapter.
         @Override
         public void onClick(View view) {
             int position = getAdapterPosition();
+            Log.e(TAG, "Clicked Position - :" + position);
             TravelDeal selectedTravelDeal = travelDeals.get(position);
+            Log.e(TAG, "Clicked Position - :" + selectedTravelDeal.getDescription());
             Intent intent = new Intent(view.getContext(), DealsActivity.class);
             intent.putExtra("Deal", selectedTravelDeal);
             view.getContext().startActivity(intent);

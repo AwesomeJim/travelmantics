@@ -65,7 +65,7 @@ public class LoginActivity extends AppCompatActivity {
 
     //Launch the Main App
     private  void naVigateTomain(){
-        Intent intent= new Intent(LoginActivity.this, DealsActivity.class);
+        Intent intent= new Intent(LoginActivity.this, MainActivity.class);
         startActivity(intent);
     }
 }

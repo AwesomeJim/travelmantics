@@ -14,4 +14,11 @@
         android:title="@string/btn_cancel"
         app:showAsAction="always"
         tools:ignore="AlwaysShowAction"/>
+
+    <item
+        android:id="@+id/bar_cancel_delete"
+        android:icon="@drawable/ic_action_cancel_btn"
+        android:title="Delete"
+        app:showAsAction="never"
+        tools:ignore="AlwaysShowAction"/>
 </menu>

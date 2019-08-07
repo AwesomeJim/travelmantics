@@ -7,22 +7,21 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
 import ke.co.jim.travelmantics.models.TravelDeal;
 import ke.co.jim.travelmantics.utils.FirebaseUtils;
@@ -30,10 +29,12 @@ import ke.co.jim.travelmantics.utils.FirebaseUtils;
 public class DealsActivity extends AppCompatActivity {
 
     private final static String TAG = DealsActivity.class.getSimpleName();
-    private final static int PICTURE_RESULTS=42;
+    private final static int PICTURE_RESULTS = 42;
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mDatabaseReference;
     private TravelDeal travelDeal;
+    private ImageView dealImageView;
+    private Button btnImage;
 
     private EditText editText_title, editText_price, editText_des;
 
@@ -48,6 +49,7 @@ public class DealsActivity extends AppCompatActivity {
         editText_title = findViewById(R.id.editText_title);
         editText_price = findViewById(R.id.editText_price);
         editText_des = findViewById(R.id.editText_des);
+        dealImageView = findViewById(R.id.image);
         Intent intent = this.getIntent();
         travelDeal = (TravelDeal) intent.getSerializableExtra("Deal");
         if (travelDeal == null) {
@@ -56,13 +58,13 @@ public class DealsActivity extends AppCompatActivity {
             editText_title.setText(travelDeal.getTitle());
             editText_price.setText(travelDeal.getPrice());
             editText_des.setText(travelDeal.getDescription());
+            showImage(travelDeal.getImageUrl());
         }
-        Button btnImage=findViewById(R.id.btn_image);
-        btnImage.setOnClickListener(view ->{
-                Intent intentt = new Intent(Intent.ACTION_GET_CONTENT);
-               intentt.setType("image/jpeg");
-               intent.putExtra(Intent.EXTRA_LOCAL_ONLY,true);
-               startActivityForResult(intent.createChooser(intent, "Insert Picture"),PICTURE_RESULTS);
+        btnImage = findViewById(R.id.btn_image);
+        btnImage.setOnClickListener(view -> {
+            Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+            photoPickerIntent.setType("image/*");
+            startActivityForResult(intent.createChooser(photoPickerIntent, "Insert Picture"), PICTURE_RESULTS);
         });
 
     }
@@ -125,7 +127,15 @@ public class DealsActivity extends AppCompatActivity {
             return;
         }
         mDatabaseReference.child(travelDeal.getId()).removeValue();
-        onBackPressed();
+        if (travelDeal.getImageName() != null && travelDeal.getImageName().isEmpty() == false){
+            StorageReference picRef=FirebaseUtils.mStorageReference.child(travelDeal.getImageName());
+            picRef.delete().addOnSuccessListener(aVoid -> {
+                Toast.makeText(DealsActivity.this, "Image deleted ", Toast.LENGTH_LONG).show();
+            }).addOnFailureListener(e -> {
+                Toast.makeText(DealsActivity.this, "Image Failed to delete", Toast.LENGTH_LONG).show();
+            });
+        }
+            onBackPressed();
     }
 
     private void cleanData() {
@@ -134,6 +144,7 @@ public class DealsActivity extends AppCompatActivity {
         editText_price.setText("");
         editText_des.setText("");
         editText_title.requestFocus();
+        dealImageView.setImageDrawable(null);
     }
 
     @Override
@@ -145,6 +156,7 @@ public class DealsActivity extends AppCompatActivity {
         editText_title.setEnabled(enable);
         editText_price.setEnabled(enable);
         editText_des.setEnabled(enable);
+        btnImage.setEnabled(enable);
 
     }
 
@@ -155,9 +167,9 @@ public class DealsActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode==PICTURE_RESULTS && resultCode==RESULT_OK){
-            Uri imageUri=data.getData();
-            StorageReference reference=FirebaseUtils.mStorageReference.child(imageUri.getLastPathSegment());
+        if (requestCode == PICTURE_RESULTS && resultCode == RESULT_OK) {
+            Uri imageUri = data.getData();
+            StorageReference reference = FirebaseUtils.mStorageReference.child(imageUri.getLastPathSegment());
             final UploadTask uploadTask = reference.putFile(imageUri);
             StorageTask<UploadTask.TaskSnapshot> taskSnapshotStorageTask = uploadTask.addOnSuccessListener(taskSnapshot -> uploadTask.continueWithTask(task -> {
                 if (!task.isSuccessful()) {
@@ -169,14 +181,24 @@ public class DealsActivity extends AppCompatActivity {
 
             }).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
-                 String   thumb_download_url = task.getResult().toString();
-                    travelDeal.setImageUrl(thumb_download_url);
+                    String imageName = taskSnapshot.getMetadata().getName();
+                    String thumb_download_url = task.getResult().toString();
+                    travelDeal.setImageName(imageName);
+                    showImage(thumb_download_url);
 
                 }
             })).addOnFailureListener(e -> {
             });
         }
+
     }
 
+    private void showImage(String url) {
+        if (url != null && url.isEmpty() == false) {
+            Picasso.get()
+                    .load(url)
+                    .into(dealImageView);
+        }
+    }
 
 }

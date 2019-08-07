@@ -12,7 +12,7 @@ Building Apps with Firebase Database and FirebaseStorage.
 
 Screenshots
 ------------
-![Home Page](Screenshots/device-2019-08-05-222623.png "Home Page" )  ![About ALC](Screenshots/device-2019-08-05-222655.png "About ALC" )   ![My Profile](Screenshots/device-2019-08-05-222727.png "My Profile" ) 
+![Login Page](Screenshots/login.png "Login Page" )  ![Home page](Screenshots/home.png"Home" )   ![Add Deal](Screenshots/adddeal.png "Add Deal" ) 
 
 
 License

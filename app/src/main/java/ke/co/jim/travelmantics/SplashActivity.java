@@ -63,10 +63,12 @@ public class SplashActivity extends AppCompatActivity {
             //User is logged in
             Intent intent = new Intent(SplashActivity.this, MainActivity.class);
             startActivity(intent);
+            finish();
         } else {
             //User Not Logged In
             Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
             startActivity(intent);
+            finish();
         }
     }
 

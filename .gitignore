@@ -65,3 +65,4 @@ fastlane/readme.md
 
 /app/release/output.json
 /app/debug/output.json
+/.idea/
